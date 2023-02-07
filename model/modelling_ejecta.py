@@ -15,7 +15,7 @@ def bubble_nucleation() -> np.array:
     if bubble_number > len(POSITION_GRID):
         raise ValueError("Bubble number exceeds grid resolution. Use a finer grid!")
     bubble_nucleation_sites = np.array(random.sample(grid_list, bubble_number))
-    print(f"Particle size = {PARTICLE_RADIUS} m. \nGrid resolution = {dR}m. \nNumber of bubbles = {bubble_number}. \n")
+    # print(f"Particle size = {PARTICLE_RADIUS} m. \nGrid resolution = {dR}m.")
 
     return bubble_nucleation_sites
 
@@ -25,20 +25,21 @@ def grow_bubbles_in_particle(probe_number: int = 10) -> dict[float:float]:
     viscosity profile for multiple bubbles with different initial positions along a 1D grid """
 
     position_to_final_radius = {}
-
+    counter = 0
     # Simulation repeated <probe_number> number of times
     for probe in range(probe_number):
-
-        print(
-            f"Simulation length = {SIMULATION_LENGTH}.\nTime resolution = {dt}.\nBubble starting radius = {INITIAL_BUBBLE_RADIUS}.\n")
-
+        counter += 1
+        print("--------------------------------------------")
+        print(f"Initiating probe {counter} of {probe_number}")
+        print("--------------------------------------------")
         bubble_nucleation_sites = bubble_nucleation()
         for idx, _ in enumerate(bubble_nucleation_sites):
             bubble_position = bubble_nucleation_sites[idx] / PARTICLE_RADIUS
             bubble_radial_growth, _ = grow_euler(bubble_nucleation_sites[idx])
             # {bubble position:final bubble radius}
             position_to_final_radius[bubble_position] = bubble_radial_growth[-1]
-
-            print(f"Bubble position = {bubble_position}")
-
+            print(f"Bubble nucleation site = {bubble_position}")
+        print("--------------------------------------------")
+        print(f"Completed probe {counter} of {probe_number}")
+        print("--------------------------------------------")
     return position_to_final_radius
